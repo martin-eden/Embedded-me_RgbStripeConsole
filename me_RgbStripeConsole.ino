@@ -10,12 +10,16 @@
 #include <me_InstallStandardStreams.h>
 #include <me_Menu.h>
 #include <me_Ws2812b.h>
+#include <me_StoredCall.h>
 
 #include <me_RgbStripeConsole.h>
 
 using
+  me_BaseTypes::TBool,
+  me_BaseTypes::TChar,
   me_BaseTypes::TUint_1,
-  me_BaseTypes::TUint_2;
+  me_BaseTypes::TUint_2,
+  me_BaseTypes::TMethod;
 
 void setup()
 {
@@ -48,6 +52,8 @@ class TRgbStripeManager
     void Init();
     void Reset();
     void Test();
+    TBool SetPixel(TUint_2 Index, me_Ws2812b::TPixel Color);
+    TBool GetPixel(TUint_2 Index, me_Ws2812b::TPixel * Color);
 };
 
 void TRgbStripeManager::Init()
@@ -72,6 +78,8 @@ void TRgbStripeManager::Reset()
 
 void TRgbStripeManager::Test()
 {
+  Reset();
+
   TUint_2 Index;
 
   Index = 0;
@@ -88,6 +96,27 @@ void TRgbStripeManager::Test()
 
   me_Ws2812b::SetLedStripeState(this->StripeState);
 }
+
+TBool TRgbStripeManager::SetPixel(
+  TUint_2 Index __attribute__((unused)),
+  me_Ws2812b::TPixel Color __attribute__((unused))
+)
+{
+  this->Pixels[Index] = Color;
+
+  me_Ws2812b::SetLedStripeState(this->StripeState);
+
+  return true;
+}
+
+TBool TRgbStripeManager::GetPixel(
+  TUint_2 Index __attribute__((unused)),
+  me_Ws2812b::TPixel * Color __attribute__((unused))
+)
+{
+  return false;
+}
+
 // ) RGB stripe serial manager
 
 // ( Stripe manager menu handlers
@@ -108,24 +137,69 @@ void RunTest_handler(
   TRgbStripeManager * StripeManager = (TRgbStripeManager *) Instance;
   StripeManager->Test();
 }
+
+void GetPixel_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripeManager * StripeManager = (TRgbStripeManager *) Instance;
+
+  TUint_2 Index;
+  me_Ws2812b::TPixel Pixel;
+
+  Index = 0;
+
+  StripeManager->GetPixel(Index, &Pixel);
+}
+
+void SetPixel_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripeManager * StripeManager = (TRgbStripeManager *) Instance;
+
+  me_Ws2812b::TPixel Pixel;
+
+  TUint_2 Index = 10;
+
+  Pixel.Red = 255;
+  Pixel.Green = 0;
+  Pixel.Blue = 255;
+
+  StripeManager->SetPixel(Index, Pixel);
+}
 // ) Stripe manager menu handlers
 
 TRgbStripeManager RgbStripeManager;
+
+// Add command
+void AddCommand(
+  me_Menu::TMenu * Menu,
+  const TChar * Command,
+  const TChar * Description,
+  TMethod Handler
+)
+{
+  me_Menu::TMenuItem Item;
+
+  Item.Command.Set(Command);
+  Item.Description.Set(Description);
+  Item.Handler.Set(Handler, (TUint_2) &RgbStripeManager);
+
+  Menu->Add(&Item);
+}
 
 // Add commands
 void AddCommands(me_Menu::TMenu * Menu)
 {
   me_Menu::TMenuItem Item;
 
-  Item.Command.Set("R");
-  Item.Description.Set("Reset");
-  Item.Handler.Set(Reset_handler, (TUint_2) &RgbStripeManager);
-  Menu->Add(&Item);
-
-  Item.Command.Set("T");
-  Item.Description.Set("Run test");
-  Item.Handler.Set(RunTest_handler, (TUint_2) &RgbStripeManager);
-  Menu->Add(&Item);
+  AddCommand(Menu, "R", "Reset", Reset_handler);
+  AddCommand(Menu, "T", "Run test", RunTest_handler);
+  AddCommand(Menu, "GetPixel", "Get pixel components", GetPixel_handler);
+  AddCommand(Menu, "SetPixel", "Set pixel components", SetPixel_handler);
 }
 
 // Menu life
@@ -146,4 +220,5 @@ void RunTest()
 
 /*
   2024-09-09
+  2024-09-11 Lol I started this two months ago under name "me_Console_LedStripe"
 */

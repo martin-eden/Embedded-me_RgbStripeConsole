@@ -9,8 +9,6 @@
 #include <me_UartSpeeds.h>
 #include <me_InstallStandardStreams.h>
 #include <me_Menu.h>
-#include <me_StoredCall.h>
-#include <me_Ws2812b.h>
 #include <me_RgbStripe.h>
 
 #include <me_RgbStripeConsole.h>
@@ -36,7 +34,7 @@ void loop()
 
 me_RgbStripe::TRgbStripe Stripe;
 
-// Add command
+// [handy] Add command to menu
 void AddCommand(
   me_Menu::TMenu * Menu,
   const TChar * Command,
@@ -53,28 +51,43 @@ void AddCommand(
   Menu->Add(&Item);
 }
 
-// Add commands
+// Add stripe-specific commands to menu
 void AddCommands(me_Menu::TMenu * Menu)
 {
   me_Menu::TMenuItem Item;
 
-  AddCommand(Menu, "D", "Display", me_RgbStripeConsole::Display_handler);
-  AddCommand(Menu, "R", "Reset", me_RgbStripeConsole::Reset_handler);
-  AddCommand(Menu, "T", "Run test", me_RgbStripeConsole::RunTest_handler);
-  AddCommand(Menu, "SP", "Set pixel components", me_RgbStripeConsole::SetPixel_handler);
-  AddCommand(Menu, "GP", "Get pixel components", me_RgbStripeConsole::GetPixel_handler);
+  using namespace me_RgbStripeConsole;
+
+  AddCommand(Menu, "D", "Display", Display_handler);
+  AddCommand(Menu, "R", "Reset", Reset_handler);
+  AddCommand(Menu, "T", "Run test", RunTest_handler);
+  AddCommand(Menu, "SP", "Set pixel components", SetPixel_handler);
+  AddCommand(Menu, "GP", "Get pixel components", GetPixel_handler);
 }
 
-// Menu life
+// Init stripe, then setup and run menu commands for that stripe
 void RunTest()
 {
-  Stripe.Init(A0, 60);
+  // Stripe setup
+  {
+    TUint_1 StripePin = A0;
+    TUint_2 NumLeds = 60;
 
-  me_Menu::TMenu Menu;
-  AddCommands(&Menu);
-  Menu.AddBuiltinCommands();
-  Menu.Print();
-  Menu.Run();
+    Stripe.Init(StripePin, NumLeds);
+  }
+
+  // Menu setup, greeting screen and run
+  {
+    me_Menu::TMenu Menu;
+
+    Menu.AddBuiltinCommands();
+
+    AddCommands(&Menu);
+
+    Menu.Print();
+
+    Menu.Run();
+  }
 }
 
 /*

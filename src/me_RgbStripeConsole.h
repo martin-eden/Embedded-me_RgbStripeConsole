@@ -15,14 +15,34 @@
 namespace me_RgbStripeConsole
 {
   // ( Stripe manager menu handlers
-  void Display_handler(TUint_2 Data, TUint_2 Instance);
 
-  void Reset_handler(TUint_2 Data, TUint_2 Instance);
+  /*
+    I cannot wrap these handlers in class because menu item handler
+    needs that "void(TUint_2, TUint_2)" function address.
 
-  void RunTest_handler(TUint_2 Data, TUint_2 Instance);
+    I can meddle with implementation and pass in second argument
+    not the pointer to stripe class but our class. But the state that
+    this class will have is just pointer to stripe class.
+    So it will be just identity wrapper.
 
-  void SetPixel_handler(TUint_2 Data, TUint_2 Instance);
-  void GetPixel_handler(TUint_2 Data, TUint_2 Instance);
+    First argument is reserved for "data" and is always empty.
+    Menu item have no additional data to pass in call.
+  */
+
+  // Send data to stripe
+  void Display_handler(TUint_2 _, TUint_2 Stripe);
+
+  // Zero data
+  void Reset_handler(TUint_2 _, TUint_2 Stripe);
+
+  // Set pixel. Input: Index Red Green Blue
+  void SetPixel_handler(TUint_2 _, TUint_2 Stripe);
+  // Get pixel. Input: Index. Output: Red Green Blue
+  void GetPixel_handler(TUint_2 _, TUint_2 Stripe);
+
+  // [handy] Just display some pattern with no questions asked
+  void RunTest_handler(TUint_2 _, TUint_2 Stripe);
+
   // ) Stripe manager menu handlers
 }
 

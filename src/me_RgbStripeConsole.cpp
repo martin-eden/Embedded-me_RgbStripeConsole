@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-17
+  Last mod.: 2024-09-18
 */
 
 #include "me_RgbStripeConsole.h"
@@ -167,6 +167,36 @@ void me_RgbStripeConsole::GetPixel_handler(
     return;
 
   printf("%u %u %u\n", Pixel.Red, Pixel.Green, Pixel.Blue);
+}
+
+// Set stripe length. Input: Length
+void me_RgbStripeConsole::SetLength_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+
+  TUint_2 Length;
+
+  if (!ReadWordInt(&Length))
+    return;
+
+  if (!Stripe->SetLength(Length))
+    return;
+}
+
+// Get stripe length. Output: Length
+void me_RgbStripeConsole::GetLength_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+
+  TUint_2 Length = Stripe->GetLength();
+
+  printf("%u\n", Length);
 }
 
 /*

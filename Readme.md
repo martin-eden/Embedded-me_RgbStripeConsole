@@ -1,8 +1,13 @@
+# What
+
 (2024-09)
+
+Serial text interface for my [RGB stripe class][me_RgbStripe].
+
 
 ## Example interaction
 
-There is text serial interface implemented via my [me_Menu] library.
+There is text serial interface implemented via my [menu][me_Menu] library.
 
 After greetings sketch prints list of available commands:
 ```
@@ -35,3 +40,15 @@ D
 
 Copy-pasting from editor is a lot funnier that typing commands every
 time.
+
+You can even write file sender in your favorite language to send
+those snippets.
+
+
+## See also
+
+* [My other embedded C++ libraries](https://github.com/martin-eden/Embedded_Crafts/tree/master/Parts)
+* [My other repositories](https://github.com/martin-eden/contents)
+
+[me_RgbStripe]: https://github.com/martin-eden/Embedded-me_RgbStripe
+[me_Menu]: https://github.com/martin-eden/Embedded-me_Menu

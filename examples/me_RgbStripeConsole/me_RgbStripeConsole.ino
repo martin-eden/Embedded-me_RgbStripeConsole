@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-17
+  Last mod.: 2024-09-18
 */
 
 #include <me_BaseTypes.h>
@@ -63,6 +63,8 @@ void AddCommands(me_Menu::TMenu * Menu)
   AddCommand(Menu, "T", "Run test", RunTest_handler);
   AddCommand(Menu, "SP", "Set pixel components", SetPixel_handler);
   AddCommand(Menu, "GP", "Get pixel components", GetPixel_handler);
+  AddCommand(Menu, "GL", "Get stripe length", GetLength_handler);
+  AddCommand(Menu, "SL", "Set stripe length", SetLength_handler);
 }
 
 // Init stripe, then setup and run menu commands for that stripe

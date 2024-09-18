@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-17
+  Last mod.: 2024-09-18
 */
 
 #pragma once
@@ -39,6 +39,11 @@ namespace me_RgbStripeConsole
   void SetPixel_handler(TUint_2 _, TUint_2 Stripe);
   // Get pixel. Input: Index. Output: Red Green Blue
   void GetPixel_handler(TUint_2 _, TUint_2 Stripe);
+
+  // Get stripe length. Output: Length
+  void GetLength_handler(TUint_2 _, TUint_2 Stripe);
+  // Set stripe length. Input: Length
+  void SetLength_handler(TUint_2 _, TUint_2 Stripe);
 
   // [handy] Just display some pattern with no questions asked
   void RunTest_handler(TUint_2 _, TUint_2 Stripe);

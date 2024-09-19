@@ -2,7 +2,12 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-18
+  Last mod.: 2024-09-19
+*/
+
+/*
+  My Lua interface actually relies on this snippet as firmware.
+  So renaming commands will require similar changes at that side.
 */
 
 #include <me_BaseTypes.h>
@@ -61,10 +66,10 @@ void AddCommands(me_Menu::TMenu * Menu)
   AddCommand(Menu, "D", "Display", Display_handler);
   AddCommand(Menu, "R", "Reset", Reset_handler);
   AddCommand(Menu, "T", "Run test", RunTest_handler);
-  AddCommand(Menu, "SP", "Set pixel components", SetPixel_handler);
-  AddCommand(Menu, "GP", "Get pixel components", GetPixel_handler);
-  AddCommand(Menu, "GL", "Get stripe length", GetLength_handler);
-  AddCommand(Menu, "SL", "Set stripe length", SetLength_handler);
+  AddCommand(Menu, "SP", "Set pixel components. (index red green blue)()", SetPixel_handler);
+  AddCommand(Menu, "GP", "Get pixel components. (index)(red green blue)", GetPixel_handler);
+  AddCommand(Menu, "GL", "Get stripe length. ()(length)", GetLength_handler);
+  AddCommand(Menu, "SL", "Set stripe length. (length)()", SetLength_handler);
 }
 
 // Init stripe, then setup and run menu commands for that stripe

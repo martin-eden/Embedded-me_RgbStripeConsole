@@ -18,10 +18,10 @@ After greetings sketch prints list of available commands:
 D - Display
 R - Reset
 T - Run test
-SP - Set pixel components
-GP - Get pixel components
-GL - Get stripe length
-SL - Set stripe length
+SP - Set pixel components. (index red green blue)()
+GP - Get pixel components. (index)(red green blue)
+GL - Get stripe length. ()(length)
+SL - Set stripe length. (length)()
 ==
 ```
 
@@ -43,6 +43,38 @@ time.
 
 You can even write file sender in your favorite language to send
 those snippets.
+
+
+## Code
+
+* [Example](examples/me_RgbStripeConsole/me_RgbStripeConsole.ino)
+* [Interface](src/me_RgbStripeConsole.h)
+* [Implementation](src/me_RgbStripeConsole.cpp)
+
+
+## Requirements
+
+  * arduino-cli
+  * bash
+
+
+## Install
+
+Run [Install.sh](Install.sh).
+
+
+## Remove
+
+Run [Remove.sh](Remove.sh).
+
+
+## Compile
+
+Zero-warnings compilation:
+
+```bash
+arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-property compiler.cpp.extra_flags="-std=c++1z"
+```
 
 
 ## See also

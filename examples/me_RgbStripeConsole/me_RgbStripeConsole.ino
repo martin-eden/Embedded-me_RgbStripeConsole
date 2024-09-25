@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-19
+  Last mod.: 2024-09-25
 */
 
 /*
@@ -64,7 +64,7 @@ void AddCommands(me_Menu::TMenu * Menu)
   using namespace me_RgbStripeConsole;
 
   AddCommand(Menu, "D", "Display", Display_handler);
-  AddCommand(Menu, "R", "Reset", Reset_handler);
+  AddCommand(Menu, "R", "Reset pixels in stripe", Reset_handler);
   AddCommand(Menu, "T", "Run test", RunTest_handler);
   AddCommand(Menu, "SP", "Set pixel components. (index red green blue)()", SetPixel_handler);
   AddCommand(Menu, "GP", "Get pixel components. (index)(red green blue)", GetPixel_handler);

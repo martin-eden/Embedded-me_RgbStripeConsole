@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-25
+  Last mod.: 2024-09-26
 */
 
 /*
@@ -22,7 +22,7 @@ void setup()
 {
   InstallStandardStreams();
 
-  Serial.begin(me_UartSpeeds::Arduino_Normal_Bps);
+  Serial.begin(me_UartSpeeds::Arduino_Fast_Bps);
 
   Serial.setTimeout(15);
 
@@ -77,7 +77,7 @@ void RunTest()
 {
   // Stripe setup
   {
-    TUint_1 StripePin = A0;
+    TUint_1 StripePin = 2;
     TUint_2 NumLeds = 60;
 
     Stripe.Init(StripePin, NumLeds);

@@ -81,6 +81,7 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 
 ## See also
 
+* [RGB stripe class][me_RgbStripe]
 * [Lua client][Lua-RgbStripeConsole]
 * [My other embedded C++ libraries](https://github.com/martin-eden/Embedded_Crafts/tree/master/Parts)
 * [My other repositories](https://github.com/martin-eden/contents)

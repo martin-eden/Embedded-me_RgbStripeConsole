@@ -2,15 +2,12 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-18
+  Last mod.: 2024-09-27
 */
 
 #pragma once
 
 #include <me_BaseTypes.h>
-#include <me_RgbStripe.h>
-
-#include <stdio.h> // printf()
 
 namespace me_RgbStripeConsole
 {
@@ -35,15 +32,20 @@ namespace me_RgbStripeConsole
   // Zero data
   void Reset_handler(TUint_2 _, TUint_2 Stripe);
 
-  // Set pixel. Input: Index Red Green Blue
+  // Set pixel. (Index Red Green Blue)()
   void SetPixel_handler(TUint_2 _, TUint_2 Stripe);
-  // Get pixel. Input: Index. Output: Red Green Blue
+  // Get pixel. (Index)(Red Green Blue)
   void GetPixel_handler(TUint_2 _, TUint_2 Stripe);
 
-  // Get stripe length. Output: Length
+  // Get stripe length. ()(Length)
   void GetLength_handler(TUint_2 _, TUint_2 Stripe);
-  // Set stripe length. Input: Length
+  // Set stripe length. (Length)()
   void SetLength_handler(TUint_2 _, TUint_2 Stripe);
+
+  // Get output pin. ()(OutputPin)
+  void GetOutputPin_handler(TUint_2 _, TUint_2 Stripe);
+  // Set output pin. (OutputPin)()
+  void SetOutputPin_handler(TUint_2 _, TUint_2 Stripe);
 
   // [handy] Just display some pattern with no questions asked
   void RunTest_handler(TUint_2 _, TUint_2 Stripe);

@@ -2,14 +2,21 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-18
+  Last mod.: 2024-09-27
 */
 
 #include "me_RgbStripeConsole.h"
 
+#include <me_RgbStripe.h>
+
+#include <stdio.h> // printf()
 #include <me_SerialTokenizer.h> // used in ReadWordInt()
 #include <me_ParseInteger.h> // used in ReadWordInt()
 #include <me_ManagedMemory.h> // used in ReadWordInt()
+
+using
+  me_RgbStripe::TRgbStripe,
+  me_RgbStripe::TColor;
 
 // ( I should move these to more generic module
 
@@ -63,27 +70,27 @@ TBool ReadByteInt(TUint_1 * Byte)
 // ( RGB stripe handlers
 
 /*
-  Send data to stripe wrapper
+  Send data to stripe
 */
 void me_RgbStripeConsole::Display_handler(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   Stripe->Display();
 }
 
 /*
-  Zero data wrapper
+  Zero data
 */
 void me_RgbStripeConsole::Reset_handler(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   Stripe->Reset();
 }
@@ -101,31 +108,31 @@ void me_RgbStripeConsole::Reset_handler(
 
   Input:
 
-    Index: ui2
-    Red: ui1
-    Green: ui1
-    Blue: ui1
+    TUint_2 -- Index
+    TUint_1 -- Red
+    TUint_1 -- Green
+    TUint_1 -- Blue
 */
 void me_RgbStripeConsole::SetPixel_handler(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   TUint_2 Index = 0;
-  me_Ws2812b::TPixel Pixel = { .Green = 0, .Red = 0, .Blue = 0 };
+  TColor Color = { .Red = 0, .Green = 0, .Blue = 0 };
 
   {
     if (!ReadWordInt(&Index)) goto Anyway;
-    if (!ReadByteInt(&Pixel.Red)) goto Anyway;
-    if (!ReadByteInt(&Pixel.Green)) goto Anyway;
-    if (!ReadByteInt(&Pixel.Blue)) goto Anyway;
+    if (!ReadByteInt(&Color.Red)) goto Anyway;
+    if (!ReadByteInt(&Color.Green)) goto Anyway;
+    if (!ReadByteInt(&Color.Blue)) goto Anyway;
   }
 
   Anyway:
 
-  if (!Stripe->SetPixel(Index, Pixel))
+  if (!Stripe->SetPixel(Index, Color))
   {
     // Well, we don't print anything on bad data on this contract.
     return;
@@ -141,41 +148,108 @@ void me_RgbStripeConsole::SetPixel_handler(
 
   Input:
 
-    Index: ui2
+    TUint_2 -- Index
 
   Output:
 
-    Red: ui1
-    Green: ui1
-    Blue: ui1
+    TUint_1 -- Red
+    TUint_1 -- Green
+    TUint_1 -- Blue
 */
 void me_RgbStripeConsole::GetPixel_handler(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   TUint_2 Index;
 
   if (!ReadWordInt(&Index))
     return;
 
-  me_Ws2812b::TPixel Pixel;
+  TColor Color;
 
-  if (!Stripe->GetPixel(Index, &Pixel))
+  if (!Stripe->GetPixel(Index, &Color))
     return;
 
-  printf("%u %u %u\n", Pixel.Red, Pixel.Green, Pixel.Blue);
+  printf("%u %u %u\n", Color.Red, Color.Green, Color.Blue);
 }
 
-// Set stripe length. Input: Length
+/*
+  Get output pin
+
+  Output
+
+    TUint_1 -- Output pin
+*/
+void me_RgbStripeConsole::GetOutputPin_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_1 OutputPin = Stripe->GetOutputPin();
+
+  printf("%u\n", OutputPin);
+}
+
+/*
+  Set output pin
+
+  Input
+
+    TUint_1 -- Output pin
+*/
+void me_RgbStripeConsole::SetOutputPin_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_1 OutputPin;
+
+  if (!ReadByteInt(&OutputPin))
+    return;
+
+  if (!Stripe->SetOutputPin(OutputPin))
+    return;
+}
+
+/*
+  Get stripe length
+
+  Output
+
+    TUint_2 -- Length
+*/
+void me_RgbStripeConsole::GetLength_handler(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_2 Length = Stripe->GetLength();
+
+  printf("%u\n", Length);
+}
+
+/*
+  Set stripe length
+
+  Input
+
+    TUint_2 -- Length
+*/
 void me_RgbStripeConsole::SetLength_handler(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   TUint_2 Length;
 
@@ -186,19 +260,6 @@ void me_RgbStripeConsole::SetLength_handler(
     return;
 }
 
-// Get stripe length. Output: Length
-void me_RgbStripeConsole::GetLength_handler(
-  TUint_2 Data __attribute__((unused)),
-  TUint_2 Instance
-)
-{
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
-
-  TUint_2 Length = Stripe->GetLength();
-
-  printf("%u\n", Length);
-}
-
 /*
   Just display some pattern with no questions asked
 */
@@ -207,16 +268,14 @@ void me_RgbStripeConsole::RunTest_handler(
   TUint_2 Instance
 )
 {
-  me_RgbStripe::TRgbStripe * Stripe = (me_RgbStripe::TRgbStripe *) Instance;
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   Stripe->Reset();
 
   // Light-up border and middle pixels. Stolen from [me_RgbStripe.Example].
   {
-    me_Ws2812b::TPixel Blue, Green;
-
-    Blue = { .Green = 0, .Red = 0, .Blue = 0xFF };
-    Green = { .Green = 0xFF, .Red = 0, .Blue = 0 };
+    TColor Blue = { .Red = 0, .Green = 0, .Blue = 0xFF };
+    TColor Green = { .Red = 0, .Green = 0xFF, .Blue = 0 };
 
     TUint_2 StripeLength = Stripe->GetLength();
 

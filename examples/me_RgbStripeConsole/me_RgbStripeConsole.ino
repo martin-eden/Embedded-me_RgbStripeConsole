@@ -2,21 +2,25 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-26
+  Last mod.: 2024-09-27
 */
 
 /*
-  My Lua interface actually relies on this snippet as firmware.
+  This sketch uses [me_Menu] to provide text interface to class instance.
+
+  My Lua interface actually relies on this as on firmware.
   So renaming commands will require similar changes at that side.
 */
 
 #include <me_BaseTypes.h>
 #include <me_UartSpeeds.h>
 #include <me_InstallStandardStreams.h>
-#include <me_Menu.h>
-#include <me_RgbStripe.h>
 
 #include <me_RgbStripeConsole.h>
+
+#include <me_RgbStripe.h>
+
+#include <me_Menu.h>
 
 void setup()
 {
@@ -37,13 +41,14 @@ void loop()
 
 //--
 
-me_RgbStripe::TRgbStripe Stripe;
-
-// [handy] Add command to menu
+/*
+  [handy] Add command to menu
+*/
 void AddCommand(
   me_Menu::TMenu * Menu,
   const TChar * Command,
   const TChar * Description,
+  me_RgbStripe::TRgbStripe * Stripe,
   TMethod Handler
 )
 {
@@ -51,45 +56,63 @@ void AddCommand(
 
   Item.Command.Set(Command);
   Item.Description.Set(Description);
-  Item.Handler.Set(Handler, (TUint_2) &Stripe);
+  Item.Handler.Set(Handler, (TUint_2) Stripe);
 
   Menu->Add(&Item);
 }
 
-// Add stripe-specific commands to menu
-void AddCommands(me_Menu::TMenu * Menu)
+/*
+  Add stripe-specific commands to menu
+*/
+void AddCommands(
+  me_Menu::TMenu * Menu,
+  me_RgbStripe::TRgbStripe * Stripe
+)
 {
   me_Menu::TMenuItem Item;
 
+  // For short referring handlers from that namespace
   using namespace me_RgbStripeConsole;
 
-  AddCommand(Menu, "D", "Display", Display_handler);
-  AddCommand(Menu, "R", "Reset pixels in stripe", Reset_handler);
-  AddCommand(Menu, "T", "Run test", RunTest_handler);
-  AddCommand(Menu, "SP", "Set pixel components. (index red green blue)()", SetPixel_handler);
-  AddCommand(Menu, "GP", "Get pixel components. (index)(red green blue)", GetPixel_handler);
-  AddCommand(Menu, "GL", "Get stripe length. ()(length)", GetLength_handler);
-  AddCommand(Menu, "SL", "Set stripe length. (length)()", SetLength_handler);
+  AddCommand(Menu, "D", "Display", Stripe, Display);
+  AddCommand(Menu, "R", "Reset pixels", Stripe, Reset);
+  AddCommand(Menu, "T", "Run test", Stripe, RunTest);
+
+  AddCommand(Menu, "SP", "Set pixel. (index red green blue)()", Stripe, SetPixel);
+  AddCommand(Menu, "GP", "Get pixel. (index)(red green blue)", Stripe, GetPixel);
+
+  AddCommand(Menu, "SPR", "Set pixels range. (start_i end_i (r g b)..)()", Stripe, SetPixels);
+  AddCommand(Menu, "GPR", "Get pixels range. (start_i end_i)((r g b)..))", Stripe, GetPixels);
+
+  AddCommand(Menu, "GL", "Get stripe length. ()(length)", Stripe, GetLength);
+  AddCommand(Menu, "SL", "Set stripe length. (length)()", Stripe, SetLength);
+  AddCommand(Menu, "GOP", "Get stripe output pin. ()(pin)", Stripe, GetOutputPin);
+  AddCommand(Menu, "SOP", "Set stripe output pin. (pin)()", Stripe, SetOutputPin);
 }
 
-// Init stripe, then setup and run menu commands for that stripe
+// Setup stripe, setup and run menu
 void RunTest()
 {
-  // Stripe setup
+  // LED stripe instance
+  me_RgbStripe::TRgbStripe Stripe;
+
+  // Setup stripe
   {
+    // You can change output pin and stripe length later from console
     TUint_1 StripePin = 2;
     TUint_2 NumLeds = 60;
 
     Stripe.Init(StripePin, NumLeds);
   }
 
-  // Menu setup, greeting screen and run
+  // Setup menu, list commands and run
   {
+    // Menu instance
     me_Menu::TMenu Menu;
 
     Menu.AddBuiltinCommands();
 
-    AddCommands(&Menu);
+    AddCommands(&Menu, &Stripe);
 
     Menu.Print();
 
@@ -101,4 +124,5 @@ void RunTest()
   2024-09-09
   2024-09-11 Lol I started this two months ago under name "me_Console_LedStripe"
   2024-09-17
+  2024-09-27
 */

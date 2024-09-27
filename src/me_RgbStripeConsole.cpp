@@ -72,7 +72,7 @@ TBool ReadByteInt(TUint_1 * Byte)
 /*
   Send data to stripe
 */
-void me_RgbStripeConsole::Display_handler(
+void me_RgbStripeConsole::Display(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
@@ -85,7 +85,7 @@ void me_RgbStripeConsole::Display_handler(
 /*
   Zero data
 */
-void me_RgbStripeConsole::Reset_handler(
+void me_RgbStripeConsole::Reset(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
@@ -98,13 +98,10 @@ void me_RgbStripeConsole::Reset_handler(
 /*
   Set pixel in memory
 
-  We will read from stdin (or serial). We return nothing.
+  We are reading from stdin (or serial). We return nothing.
 
-  What if we did not read enough data or data is not suitable?
-
-  Before reading data we set index and pixel to some default values.
-  Reading valid data overwrites these values. Reading bad data just
-  jumps to pixel writing code.
+  If we did not read enough data or data is not suitable,
+  we just return.
 
   Input:
 
@@ -113,38 +110,32 @@ void me_RgbStripeConsole::Reset_handler(
     TUint_1 -- Green
     TUint_1 -- Blue
 */
-void me_RgbStripeConsole::SetPixel_handler(
+void me_RgbStripeConsole::SetPixel(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
-  TUint_2 Index = 0;
-  TColor Color = { .Red = 0, .Green = 0, .Blue = 0 };
+  TUint_2 Index;
+  TColor Color;
 
+  if (!ReadWordInt(&Index)) return;
+
+  // Read color components
   {
-    if (!ReadWordInt(&Index)) goto Anyway;
-    if (!ReadByteInt(&Color.Red)) goto Anyway;
-    if (!ReadByteInt(&Color.Green)) goto Anyway;
-    if (!ReadByteInt(&Color.Blue)) goto Anyway;
+    if (!ReadByteInt(&Color.Red)) return;
+    if (!ReadByteInt(&Color.Green)) return;
+    if (!ReadByteInt(&Color.Blue)) return;
   }
 
-  Anyway:
-
-  if (!Stripe->SetPixel(Index, Color))
-  {
-    // Well, we don't print anything on bad data on this contract.
-    return;
-  }
+  if (!Stripe->SetPixel(Index, Color)) return;
 }
 
 /*
   Get pixel value
 
-  We will read index from stdin and write color to stdout.
-
-  If index is bad, we will return without writing to stdout.
+  If index is bad, we return without writing.
 
   Input:
 
@@ -156,7 +147,7 @@ void me_RgbStripeConsole::SetPixel_handler(
     TUint_1 -- Green
     TUint_1 -- Blue
 */
-void me_RgbStripeConsole::GetPixel_handler(
+void me_RgbStripeConsole::GetPixel(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
@@ -164,16 +155,150 @@ void me_RgbStripeConsole::GetPixel_handler(
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
   TUint_2 Index;
-
-  if (!ReadWordInt(&Index))
-    return;
-
   TColor Color;
 
-  if (!Stripe->GetPixel(Index, &Color))
-    return;
+  if (!ReadWordInt(&Index)) return;
+
+  if (!Stripe->GetPixel(Index, &Color)) return;
 
   printf("%u %u %u\n", Color.Red, Color.Green, Color.Blue);
+}
+
+
+// ( Pixels range
+
+/*
+  Our base class provides access to any pixel.
+
+  However common communication scenario is setting all stripe
+  pixels to different values. This can be transmitted as
+
+    SP 1 11 11 11
+    SP 0 10 10 10
+    SP 2 12 12 12
+    // Tokens = Pixels * 5
+
+  Each pixel in transaction has unique index from range.
+  So I would prefer just specify index range and transmit
+  sequence of pixel colors:
+
+    SPR 0 2 10 10 10 11 11 11 12 12 12
+    // Tokens = Pixels * 3 + 3
+
+  Not readable and less resilient but we are transmitting same data
+  in less tokens. So what previously took 10 seconds now will take 6.
+*/
+
+/*
+  Set pixels
+
+  Additional functionality.
+
+  Input:
+
+    TUint_2 -- Start index
+    TUint_2 -- Stop index
+    (
+      TUint_1 -- Red
+      TUint_1 -- Green
+      TUint_1 -- Blue
+    ) ..
+*/
+void me_RgbStripeConsole::SetPixels(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_2 StartIndex, StopIndex;
+
+  if (!ReadWordInt(&StartIndex)) return;
+  if (!ReadWordInt(&StopIndex)) return;
+
+  // Set pixels in range
+  {
+    TUint_2 Index;
+    TColor Color;
+
+    for (Index = StartIndex; Index <= StopIndex; ++Index)
+    {
+      if (!ReadByteInt(&Color.Red)) return;
+      if (!ReadByteInt(&Color.Green)) return;
+      if (!ReadByteInt(&Color.Blue)) return;
+
+      if (!Stripe->SetPixel(Index, Color)) return;
+    }
+  }
+}
+
+/*
+  Get pixels
+
+  Additional functionality.
+
+  Input:
+
+    TUint_2 -- Start index
+    TUint_2 -- Stop index
+
+  Output:
+
+    (
+      TUint_1 -- Red
+      TUint_1 -- Green
+      TUint_1 -- Blue
+    ) ..
+*/
+void me_RgbStripeConsole::GetPixels(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_2 StartIndex, StopIndex;
+
+  if (!ReadWordInt(&StartIndex)) return;
+  if (!ReadWordInt(&StopIndex)) return;
+
+  // Print pixels in range
+  {
+    TUint_2 Index;
+    TColor Color;
+
+    for (Index = StartIndex; Index <= StopIndex; ++Index)
+    {
+      if (!Stripe->GetPixel(Index, &Color)) break;
+
+      printf(" %u %u %u ", Color.Red, Color.Green, Color.Blue);
+    }
+
+    printf("\n");
+  }
+}
+
+// ) Pixels range
+
+/*
+  Set output pin
+
+  Input
+
+    TUint_1 -- Output pin
+*/
+void me_RgbStripeConsole::SetOutputPin(
+  TUint_2 Data __attribute__((unused)),
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_1 OutputPin;
+
+  if (!ReadByteInt(&OutputPin)) return;
+
+  if (!Stripe->SetOutputPin(OutputPin)) return;
 }
 
 /*
@@ -183,7 +308,7 @@ void me_RgbStripeConsole::GetPixel_handler(
 
     TUint_1 -- Output pin
 */
-void me_RgbStripeConsole::GetOutputPin_handler(
+void me_RgbStripeConsole::GetOutputPin(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
@@ -196,26 +321,24 @@ void me_RgbStripeConsole::GetOutputPin_handler(
 }
 
 /*
-  Set output pin
+  Set stripe length
 
   Input
 
-    TUint_1 -- Output pin
+    TUint_2 -- Length
 */
-void me_RgbStripeConsole::SetOutputPin_handler(
+void me_RgbStripeConsole::SetLength(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
 {
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
-  TUint_1 OutputPin;
+  TUint_2 Length;
 
-  if (!ReadByteInt(&OutputPin))
-    return;
+  if (!ReadWordInt(&Length)) return;
 
-  if (!Stripe->SetOutputPin(OutputPin))
-    return;
+  if (!Stripe->SetLength(Length)) return;
 }
 
 /*
@@ -225,7 +348,7 @@ void me_RgbStripeConsole::SetOutputPin_handler(
 
     TUint_2 -- Length
 */
-void me_RgbStripeConsole::GetLength_handler(
+void me_RgbStripeConsole::GetLength(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
@@ -238,32 +361,9 @@ void me_RgbStripeConsole::GetLength_handler(
 }
 
 /*
-  Set stripe length
-
-  Input
-
-    TUint_2 -- Length
-*/
-void me_RgbStripeConsole::SetLength_handler(
-  TUint_2 Data __attribute__((unused)),
-  TUint_2 Instance
-)
-{
-  TRgbStripe * Stripe = (TRgbStripe *) Instance;
-
-  TUint_2 Length;
-
-  if (!ReadWordInt(&Length))
-    return;
-
-  if (!Stripe->SetLength(Length))
-    return;
-}
-
-/*
   Just display some pattern with no questions asked
 */
-void me_RgbStripeConsole::RunTest_handler(
+void me_RgbStripeConsole::RunTest(
   TUint_2 Data __attribute__((unused)),
   TUint_2 Instance
 )
@@ -293,4 +393,5 @@ void me_RgbStripeConsole::RunTest_handler(
 /*
   2024-09-09
   2024-09-17
+  2024-09-27
 */

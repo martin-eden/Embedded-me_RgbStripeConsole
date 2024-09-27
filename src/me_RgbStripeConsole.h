@@ -14,41 +14,48 @@ namespace me_RgbStripeConsole
   // ( Stripe manager menu handlers
 
   /*
-    I cannot wrap these handlers in class because menu item handler
-    needs that "void(TUint_2, TUint_2)" function address.
+    Here are set of functions with fixed signature for use as handlers.
 
-    I can meddle with implementation and pass in second argument
-    not the pointer to stripe class but our class. But the state that
-    this class will have is just pointer to stripe class.
-    So it will be just identity wrapper.
+    They read arguments and write results to serial.
 
     First argument is reserved for "data" and is always empty.
     Menu item have no additional data to pass in call.
+
+    Second argument is pointer to [TRgbStripe] class data.
+
+    Most of them are just wrappings of class methods.
+
+    Except for RunTest(), SetPixels() and GetPixels().
   */
 
   // Send data to stripe
-  void Display_handler(TUint_2 _, TUint_2 Stripe);
+  void Display(TUint_2 _, TUint_2 Stripe);
 
   // Zero data
-  void Reset_handler(TUint_2 _, TUint_2 Stripe);
+  void Reset(TUint_2 _, TUint_2 Stripe);
 
   // Set pixel. (Index Red Green Blue)()
-  void SetPixel_handler(TUint_2 _, TUint_2 Stripe);
+  void SetPixel(TUint_2 _, TUint_2 Stripe);
   // Get pixel. (Index)(Red Green Blue)
-  void GetPixel_handler(TUint_2 _, TUint_2 Stripe);
+  void GetPixel(TUint_2 _, TUint_2 Stripe);
+
+  // Set pixels. (StartIdx EndIdx (Red Green Blue)..)()
+  void SetPixels(TUint_2 _, TUint_2 Stripe);
+  // Get pixels. (StartIdx EndIdx)((Red Green Blue)..)
+  void GetPixels(TUint_2 _, TUint_2 Stripe);
 
   // Get stripe length. ()(Length)
-  void GetLength_handler(TUint_2 _, TUint_2 Stripe);
+  void GetLength(TUint_2 _, TUint_2 Stripe);
   // Set stripe length. (Length)()
-  void SetLength_handler(TUint_2 _, TUint_2 Stripe);
+  void SetLength(TUint_2 _, TUint_2 Stripe);
 
   // Get output pin. ()(OutputPin)
-  void GetOutputPin_handler(TUint_2 _, TUint_2 Stripe);
+  void GetOutputPin(TUint_2 _, TUint_2 Stripe);
   // Set output pin. (OutputPin)()
-  void SetOutputPin_handler(TUint_2 _, TUint_2 Stripe);
+  void SetOutputPin(TUint_2 _, TUint_2 Stripe);
 
   // [handy] Just display some pattern with no questions asked
-  void RunTest_handler(TUint_2 _, TUint_2 Stripe);
+  void RunTest(TUint_2 _, TUint_2 Stripe);
 
   // ) Stripe manager menu handlers
 }
@@ -56,4 +63,5 @@ namespace me_RgbStripeConsole
 /*
   2024-09-09
   2024-09-17
+  2024-09-27 Range of pixels
 */

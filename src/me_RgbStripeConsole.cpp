@@ -2,70 +2,22 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-27
+  Last mod.: 2024-10-01
 */
 
 #include "me_RgbStripeConsole.h"
 
 #include <me_RgbStripe.h>
 
+#include <me_ReadInteger.h> // for reading integers, lol
+
 #include <stdio.h> // printf()
-#include <me_SerialTokenizer.h> // used in ReadWordInt()
-#include <me_ParseInteger.h> // used in ReadWordInt()
-#include <me_ManagedMemory.h> // used in ReadWordInt()
 
 using
   me_RgbStripe::TRgbStripe,
-  me_RgbStripe::TColor;
-
-// ( I should move these to more generic module
-
-// Read decimal integer in range [0, 65535] from stdin
-TBool ReadWordInt(TUint_2 * Word)
-{
-  *Word = 0;
-
-  me_ManagedMemory::TManagedMemory Buffer;
-
-  const TUint_1 BufferSize = 6;
-
-  /*
-    TManagedMemory will call .Release() upon object death.
-    So we may not call it explicitly.
-  */
-  Buffer.Reserve(BufferSize);
-
-  me_SerialTokenizer::TCapturedEntity Entity;
-
-  if (!me_SerialTokenizer::GetEntity(&Entity, Buffer))
-    return false;
-
-  if (Entity.IsTrimmed)
-    return false;
-
-  if (!me_ParseInteger::AsciiToUint2(Word, Entity.Segment))
-    return false;
-
-  return true;
-}
-
-// Read decimal integer in range [0, 255] from stdin
-TBool ReadByteInt(TUint_1 * Byte)
-{
-  TUint_2 Word;
-
-  if (!ReadWordInt(&Word))
-    return false;
-
-  if (Word > 255)
-    return false;
-
-  *Byte = Word;
-
-  return true;
-}
-
-// ) Move these to more generic module
+  me_RgbStripe::TColor,
+  me_ReadInteger::Read_TUint_1,
+  me_ReadInteger::Read_TUint_2;
 
 // ( RGB stripe handlers
 
@@ -120,13 +72,13 @@ void me_RgbStripeConsole::SetPixel(
   TUint_2 Index;
   TColor Color;
 
-  if (!ReadWordInt(&Index)) return;
+  if (!Read_TUint_2(&Index)) return;
 
   // Read color components
   {
-    if (!ReadByteInt(&Color.Red)) return;
-    if (!ReadByteInt(&Color.Green)) return;
-    if (!ReadByteInt(&Color.Blue)) return;
+    if (!Read_TUint_1(&Color.Red)) return;
+    if (!Read_TUint_1(&Color.Green)) return;
+    if (!Read_TUint_1(&Color.Blue)) return;
   }
 
   if (!Stripe->SetPixel(Index, Color)) return;
@@ -157,7 +109,7 @@ void me_RgbStripeConsole::GetPixel(
   TUint_2 Index;
   TColor Color;
 
-  if (!ReadWordInt(&Index)) return;
+  if (!Read_TUint_2(&Index)) return;
 
   if (!Stripe->GetPixel(Index, &Color)) return;
 
@@ -213,8 +165,8 @@ void me_RgbStripeConsole::SetPixels(
 
   TUint_2 StartIndex, StopIndex;
 
-  if (!ReadWordInt(&StartIndex)) return;
-  if (!ReadWordInt(&StopIndex)) return;
+  if (!Read_TUint_2(&StartIndex)) return;
+  if (!Read_TUint_2(&StopIndex)) return;
 
   // Set pixels in range
   {
@@ -223,9 +175,9 @@ void me_RgbStripeConsole::SetPixels(
 
     for (Index = StartIndex; Index <= StopIndex; ++Index)
     {
-      if (!ReadByteInt(&Color.Red)) return;
-      if (!ReadByteInt(&Color.Green)) return;
-      if (!ReadByteInt(&Color.Blue)) return;
+      if (!Read_TUint_1(&Color.Red)) return;
+      if (!Read_TUint_1(&Color.Green)) return;
+      if (!Read_TUint_1(&Color.Blue)) return;
 
       if (!Stripe->SetPixel(Index, Color)) return;
     }
@@ -259,8 +211,8 @@ void me_RgbStripeConsole::GetPixels(
 
   TUint_2 StartIndex, StopIndex;
 
-  if (!ReadWordInt(&StartIndex)) return;
-  if (!ReadWordInt(&StopIndex)) return;
+  if (!Read_TUint_2(&StartIndex)) return;
+  if (!Read_TUint_2(&StopIndex)) return;
 
   // Print pixels in range
   {
@@ -296,7 +248,7 @@ void me_RgbStripeConsole::SetOutputPin(
 
   TUint_1 OutputPin;
 
-  if (!ReadByteInt(&OutputPin)) return;
+  if (!Read_TUint_1(&OutputPin)) return;
 
   if (!Stripe->SetOutputPin(OutputPin)) return;
 }
@@ -336,7 +288,7 @@ void me_RgbStripeConsole::SetLength(
 
   TUint_2 Length;
 
-  if (!ReadWordInt(&Length)) return;
+  if (!Read_TUint_2(&Length)) return;
 
   if (!Stripe->SetLength(Length)) return;
 }

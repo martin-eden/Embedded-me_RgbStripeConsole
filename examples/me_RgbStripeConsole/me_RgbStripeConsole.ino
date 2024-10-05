@@ -54,8 +54,8 @@ void AddCommand(
 {
   me_Menu::TMenuItem Item;
 
-  Item.Command.Set(Command);
-  Item.Description.Set(Description);
+  Item.Command.LoadFrom(Command);
+  Item.Description.LoadFrom(Description);
   Item.Handler.Set(Handler, (TUint_2) Stripe);
 
   Menu->Add(&Item);

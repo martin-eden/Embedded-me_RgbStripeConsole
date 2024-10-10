@@ -12,19 +12,19 @@ There is text serial interface implemented via my [menu][me_Menu] library.
 After greetings sketch prints list of available commands:
 ```
 --
-? - List commands
-^ - Exit
-D - Display
-R - Reset pixels
-T - Run test
-SP - Set pixel. (index red green blue)()
-GP - Get pixel. (index)(red green blue)
-SPR - Set pixels range. (start_i end_i (r g b)..)()
-GPR - Get pixels range. (start_i end_i)((r g b)..))
-GL - Get stripe length. ()(length)
-SL - Set stripe length. (length)()
-GOP - Get stripe output pin. ()(pin)
-SOP - Set stripe output pin. (pin)()
+  ? - List commands
+  ^ - Exit
+  D - Display
+  R - Reset pixels
+  T - Run test
+  SP - Set pixel. (index red green blue)()
+  GP - Get pixel. (index)(red green blue)
+  SPR - Set pixels range. (start_i end_i (r g b)..)()
+  GPR - Get pixels range. (start_i end_i)((r g b)..))
+  GL - Get stripe length. ()(length)
+  SL - Set stripe length. (length)()
+  GOP - Get stripe output pin. ()(pin)
+  SOP - Set stripe output pin. (pin)()
 ==
 ```
 

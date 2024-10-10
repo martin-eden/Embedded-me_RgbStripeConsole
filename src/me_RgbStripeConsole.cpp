@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-01
+  Last mod.: 2024-10-11
 */
 
 #include "me_RgbStripeConsole.h"
@@ -11,7 +11,7 @@
 
 #include <me_ReadInteger.h> // for reading integers, lol
 
-#include <stdio.h> // printf()
+#include <me_Console.h> // printing data to serial
 
 using
   me_RgbStripe::TRgbStripe,
@@ -113,7 +113,10 @@ void me_RgbStripeConsole::GetPixel(
 
   if (!Stripe->GetPixel(Index, &Color)) return;
 
-  printf("%u %u %u\n", Color.Red, Color.Green, Color.Blue);
+  Console.Print(Color.Red);
+  Console.Print(Color.Green);
+  Console.Print(Color.Blue);
+  Console.EndLine();
 }
 
 
@@ -223,10 +226,12 @@ void me_RgbStripeConsole::GetPixels(
     {
       if (!Stripe->GetPixel(Index, &Color)) break;
 
-      printf(" %u %u %u ", Color.Red, Color.Green, Color.Blue);
+      Console.Print(Color.Red);
+      Console.Print(Color.Green);
+      Console.Print(Color.Blue);
     }
 
-    printf("\n");
+    Console.EndLine();
   }
 }
 
@@ -269,7 +274,8 @@ void me_RgbStripeConsole::GetOutputPin(
 
   TUint_1 OutputPin = Stripe->GetOutputPin();
 
-  printf("%u\n", OutputPin);
+  Console.Print(OutputPin);
+  Console.EndLine();
 }
 
 /*
@@ -309,7 +315,8 @@ void me_RgbStripeConsole::GetLength(
 
   TUint_2 Length = Stripe->GetLength();
 
-  printf("%u\n", Length);
+  Console.Print(Length);
+  Console.EndLine();
 }
 
 /*
@@ -346,4 +353,5 @@ void me_RgbStripeConsole::RunTest(
   2024-09-09
   2024-09-17
   2024-09-27
+  2024-10-10
 */

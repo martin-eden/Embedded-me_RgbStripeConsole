@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-12
+  Last mod.: 2024-10-13
 */
 
 /*
@@ -79,16 +79,16 @@ void AddCommands(
   AddCommand(Menu, "R", "Reset pixels", Stripe, Reset);
   AddCommand(Menu, "T", "Run test", Stripe, RunTest);
 
-  AddCommand(Menu, "SP", "Set pixel. (index red green blue)()", Stripe, SetPixel);
-  AddCommand(Menu, "GP", "Get pixel. (index)(red green blue)", Stripe, GetPixel);
+  AddCommand(Menu, "SP", "Set pixel. (idx r g b)()", Stripe, SetPixel);
+  AddCommand(Menu, "GP", "Get pixel. (idx)(r g b)", Stripe, GetPixel);
 
   AddCommand(Menu, "SPR", "Set pixels range. (start_i end_i (r g b)..)()", Stripe, SetPixels);
   AddCommand(Menu, "GPR", "Get pixels range. (start_i end_i)((r g b)..))", Stripe, GetPixels);
 
-  AddCommand(Menu, "GL", "Get stripe length. ()(length)", Stripe, GetLength);
-  AddCommand(Menu, "SL", "Set stripe length. (length)()", Stripe, SetLength);
-  AddCommand(Menu, "GOP", "Get stripe output pin. ()(pin)", Stripe, GetOutputPin);
-  AddCommand(Menu, "SOP", "Set stripe output pin. (pin)()", Stripe, SetOutputPin);
+  AddCommand(Menu, "GL", "Get length. ()(len)", Stripe, GetLength);
+  AddCommand(Menu, "SL", "Set length. (len)()", Stripe, SetLength);
+  AddCommand(Menu, "GOP", "Get output pin. ()(pin)", Stripe, GetOutputPin);
+  AddCommand(Menu, "SOP", "Set output pin. (pin)()", Stripe, SetOutputPin);
 }
 
 // Setup stripe, setup and run menu

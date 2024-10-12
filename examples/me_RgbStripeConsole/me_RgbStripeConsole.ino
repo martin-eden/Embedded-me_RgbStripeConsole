@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-09-27
+  Last mod.: 2024-10-12
 */
 
 /*
@@ -27,12 +27,13 @@ void setup()
   InstallStandardStreams();
 
   Serial.begin(me_UartSpeeds::Arduino_Fast_Bps);
-
   Serial.setTimeout(15);
 
-  printf("[me_RgbStripeConsole] Okay, we are here.\n");
+  printf_P(PSTR("[me_RgbStripeConsole] Okay, we are here.\n"));
+
   RunTest();
-  printf("[me_RgbStripeConsole] Done.\n");
+
+  printf_P(PSTR("[me_RgbStripeConsole] Done.\n"));
 }
 
 void loop()
@@ -102,7 +103,11 @@ void RunTest()
     TUint_1 StripePin = 2;
     TUint_2 NumLeds = 60;
 
-    Stripe.Init(StripePin, NumLeds);
+    if (!Stripe.Init(StripePin, NumLeds))
+    {
+      printf_P(PSTR("Failed to init stripe. No memory for that length?\n"));
+      return;
+    }
   }
 
   // Setup menu, list commands and run

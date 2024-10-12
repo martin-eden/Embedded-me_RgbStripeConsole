@@ -12,28 +12,23 @@
   So renaming commands will require similar changes at that side.
 */
 
+#include <me_RgbStripeConsole.h>
+
 #include <me_BaseTypes.h>
 #include <me_UartSpeeds.h>
 #include <me_InstallStandardStreams.h>
 
-#include <me_RgbStripeConsole.h>
-
 #include <me_RgbStripe.h>
-
 #include <me_Menu.h>
 
 void setup()
 {
-  InstallStandardStreams();
-
   Serial.begin(me_UartSpeeds::Arduino_Fast_Bps);
   Serial.setTimeout(15);
 
-  printf_P(PSTR("[me_RgbStripeConsole] Okay, we are here.\n"));
+  InstallStandardStreams();
 
   RunTest();
-
-  printf_P(PSTR("[me_RgbStripeConsole] Done.\n"));
 }
 
 void loop()

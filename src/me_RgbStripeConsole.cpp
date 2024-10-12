@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-11
+  Last mod.: 2024-10-13
 */
 
 #include "me_RgbStripeConsole.h"
@@ -229,6 +229,7 @@ void me_RgbStripeConsole::GetPixels(
       Console.Print(Color.Red);
       Console.Print(Color.Green);
       Console.Print(Color.Blue);
+      Console.Write("");
     }
 
     Console.EndLine();

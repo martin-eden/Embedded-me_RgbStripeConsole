@@ -70,8 +70,8 @@ Setting up toolchain is a pain, I know.
 Even more for my source code, because it's scattered among repos and
 repos are evolving.
 
-So I'm providing compiled binary. It may be not latest but stable
-version I'm happy with.
+So I'm providing [compiled binary][Binary]. Maybe it's not the latest
+but stable version I'm happy with.
 
 * Use [Upload.sh](Upload.sh).
 
@@ -103,6 +103,7 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 * [My other embedded C++ libraries](https://github.com/martin-eden/Embedded_Crafts/tree/master/Parts)
 * [My other repositories](https://github.com/martin-eden/contents)
 
+[Binary]: bin/me_RgbStripeConsole.ino.hex
 [Example]: examples/me_RgbStripeConsole/me_RgbStripeConsole.ino
 [Interface]: src/me_RgbStripeConsole.h
 [Implementation]: src/me_RgbStripeConsole.cpp

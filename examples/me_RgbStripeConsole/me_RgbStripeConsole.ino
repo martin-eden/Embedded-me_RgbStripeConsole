@@ -20,6 +20,7 @@
 
 #include <me_RgbStripe.h>
 #include <me_Menu.h>
+#include <me_Heap.h>
 
 void setup()
 {
@@ -27,6 +28,12 @@ void setup()
   Serial.setTimeout(15);
 
   InstallStandardStreams();
+
+  if (!Heap.Init(1000))
+  {
+    printf_P(PSTR("[me_RgbStripeConsole] Failed to allocate heap.\n"));
+    return;
+  }
 
   printf_P(PSTR("[me_RgbStripeConsole] Started.\n"));
   RunTest();
@@ -94,19 +101,6 @@ void RunTest()
   // LED stripe instance
   me_RgbStripe::TRgbStripe Stripe;
 
-  // Setup stripe
-  {
-    // You can change output pin and stripe length later from console
-    TUint_1 StripePin = 2;
-    TUint_2 NumLeds = 60;
-
-    if (!Stripe.Init(StripePin, NumLeds))
-    {
-      printf_P(PSTR("Failed to init stripe. No memory for that length?\n"));
-      return;
-    }
-  }
-
   // Setup menu, list commands and run
   {
     // Menu instance
@@ -115,6 +109,24 @@ void RunTest()
     Menu.AddBuiltinCommands();
 
     AddCommands(&Menu, &Stripe);
+
+    /*
+      Setup stripe
+
+      If we want to keep freedom to resize stripe, we should allocate
+      it's large block after all smaller allocations are done.
+    */
+    {
+      // You can change output pin and stripe length later from console
+      TUint_1 StripePin = 2;
+      TUint_2 NumLeds = 60;
+
+      if (!Stripe.Init(StripePin, NumLeds))
+      {
+        printf_P(PSTR("Failed to init stripe. No memory for that length?\n"));
+        return;
+      }
+    }
 
     Menu.Print();
 

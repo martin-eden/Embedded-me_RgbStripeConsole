@@ -28,7 +28,9 @@ void setup()
 
   InstallStandardStreams();
 
+  printf_P(PSTR("[me_RgbStripeConsole] Started.\n"));
   RunTest();
+  printf_P(PSTR("[me_RgbStripeConsole] Done.\n"));
 }
 
 void loop()

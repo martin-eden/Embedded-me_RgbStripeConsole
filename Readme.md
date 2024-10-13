@@ -1,15 +1,14 @@
 # What
 
-(2024-09)
+(2024-09/2024-10)
 
 Serial text interface for my [RGB stripe class][me_RgbStripe].
 
 
-## Example interaction
+## Sample output
 
-There is text serial interface implemented via my [menu][me_Menu] library.
+Serial speed 115200.
 
-After greetings sketch prints list of available commands:
 ```
 --
   ? - List commands
@@ -17,23 +16,27 @@ After greetings sketch prints list of available commands:
   D - Display
   R - Reset pixels
   T - Run test
-  SP - Set pixel. (index red green blue)()
-  GP - Get pixel. (index)(red green blue)
+  SP - Set pixel. (idx r g b)()
+  GP - Get pixel. (idx)(r g b)
   SPR - Set pixels range. (start_i end_i (r g b)..)()
   GPR - Get pixels range. (start_i end_i)((r g b)..))
-  GL - Get stripe length. ()(length)
-  SL - Set stripe length. (length)()
-  GOP - Get stripe output pin. ()(pin)
-  SOP - Set stripe output pin. (pin)()
+  GL - Get length. ()(len)
+  SL - Set length. (len)()
+  GOP - Get output pin. ()(pin)
+  SOP - Set output pin. (pin)()
 ==
+
 ```
 
-Then you can send command and arguments (for commands like set pixel).
+There is text interface implemented via my [menu][me_Menu] library.
+
+You can send command and arguments (for commands like set pixel).
 You can send several commands. Delimiter is space or newline.
 On your machine you can create simple scripts like
 setting pixels (12, 30 and 48) to (red, green and blue):
 
 ```
+R
 SP 12 255 0 0
 SP 30 0 255 0
 SP 48 0 0 255
@@ -60,12 +63,26 @@ those snippets. (I wrote [mine in Lua][Lua-RgbStripeConsole]).
   * bash
 
 
-## Install
+## Installation
 
-Run [Install.sh](Install.sh).
+Setting up toolchain is a pain, I know.
+
+Even more for my source code, because it's scattered among repos and
+repos are evolving.
+
+So I'm providing compiled binary. It may be not latest but stable
+version I'm happy with.
+
+* Use [Upload.sh](Upload.sh).
+
+  It assumes you're under Linux and _apt-installed_ `avrdude`.
+
+* Or use `arduino-cli`, collect libraries and compile:
+
+  Run [Install.sh](Install.sh).
 
 
-## Remove
+## Removal
 
 Run [Remove.sh](Remove.sh).
 

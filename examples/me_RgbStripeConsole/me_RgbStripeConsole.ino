@@ -20,7 +20,6 @@
 
 #include <me_RgbStripe.h>
 #include <me_Menu.h>
-#include <me_Heap.h>
 
 void setup()
 {
@@ -28,12 +27,6 @@ void setup()
   Serial.setTimeout(15);
 
   InstallStandardStreams();
-
-  if (!Heap.Init(900))
-  {
-    printf_P(PSTR("[me_RgbStripeConsole] Failed to allocate heap.\n"));
-    return;
-  }
 
   printf_P(PSTR("[me_RgbStripeConsole] Started.\n"));
   RunTest();
@@ -141,4 +134,5 @@ void RunTest()
   2024-09-11 Lol I started this two months ago under name "me_Console_LedStripe"
   2024-09-17
   2024-09-27
+  2024-10-18
 */

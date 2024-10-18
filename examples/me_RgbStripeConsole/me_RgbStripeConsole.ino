@@ -102,35 +102,36 @@ void RunTest()
   // LED stripe instance
   me_RgbStripe::TRgbStripe Stripe;
 
-  // Setup menu, list commands and run
-  {
-    // Menu instance
-    me_Menu::TMenu Menu;
+  // Menu instance
+  me_Menu::TMenu Menu;
 
+  // Setup menu
+  {
     Menu.AddBuiltinCommands();
 
     AddCommands(&Menu, &Stripe);
+  }
 
-    /*
-      Setup stripe
+  // Setup stripe
+  /*
+    Initializing here to have space to resize pixels memory when
+    changing stripe length.
+  */
+  {
+    // We can change output pin and stripe length later from console
+    TUint_1 StripePin = 2;
+    TUint_2 NumLeds = 60;
 
-      If we want to keep freedom to resize stripe, we should allocate
-      it's large block after all smaller allocations are done.
-    */
+    if (!Stripe.Init(StripePin, NumLeds))
     {
-      // You can change output pin and stripe length later from console
-      TUint_1 StripePin = 2;
-      TUint_2 NumLeds = 60;
-
-      if (!Stripe.Init(StripePin, NumLeds))
-      {
-        printf_P(PSTR("Failed to init stripe. No memory for that length?\n"));
-        return;
-      }
+      printf_P(PSTR("Failed to init stripe. No memory for that length?\n"));
+      return;
     }
+  }
 
+  // Print menu commands and start handling them
+  {
     Menu.Print();
-
     Menu.Run();
   }
 }

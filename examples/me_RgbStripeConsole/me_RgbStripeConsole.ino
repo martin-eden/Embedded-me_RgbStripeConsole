@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-13
+  Last mod.: 2024-10-18
 */
 
 /*
@@ -57,13 +57,14 @@ void AddCommand(
   TMethod Handler
 )
 {
+  using
+    me_Menu::Freetown::ToItem;
+
   me_Menu::TMenuItem Item;
 
-  Item.Command.LoadFrom(Command);
-  Item.Description.LoadFrom(Description);
-  Item.Handler.Set(Handler, (TUint_2) Stripe);
+  Item = ToItem(Command, Description, Handler, (TUint_2) Stripe);
 
-  Menu->Add(&Item);
+  Menu->AddItem(Item);
 }
 
 /*

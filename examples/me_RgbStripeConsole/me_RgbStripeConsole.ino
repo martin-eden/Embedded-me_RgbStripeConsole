@@ -29,7 +29,7 @@ void setup()
 
   InstallStandardStreams();
 
-  if (!Heap.Init(1000))
+  if (!Heap.Init(900))
   {
     printf_P(PSTR("[me_RgbStripeConsole] Failed to allocate heap.\n"));
     return;

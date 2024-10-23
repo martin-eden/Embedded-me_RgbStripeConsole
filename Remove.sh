@@ -13,5 +13,4 @@ arduino-cli lib uninstall \
   me_InstallStandardStreams \
   me_ManagedMemory \
   me_MemorySegment \
-  me_MemoryPoint \
   me_BaseTypes

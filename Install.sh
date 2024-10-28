@@ -9,6 +9,7 @@ arduino-cli \
       https://github.com/martin-eden/Embedded-me_ManagedMemory \
       https://github.com/martin-eden/Embedded-me_InstallStandardStreams \
       https://github.com/martin-eden/Embedded-me_UartSpeeds \
+      https://github.com/martin-eden/Embedded-me_Uart \
       https://github.com/martin-eden/Embedded-me_Menu \
       https://github.com/martin-eden/Embedded-me_RgbStripe \
       https://github.com/martin-eden/Embedded-me_SerialTokenizer \

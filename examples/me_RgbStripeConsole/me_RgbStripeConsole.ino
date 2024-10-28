@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-18
+  Last mod.: 2024-10-28
 */
 
 /*
@@ -16,6 +16,7 @@
 
 #include <me_BaseTypes.h>
 #include <me_UartSpeeds.h>
+#include <me_Uart.h>
 #include <me_InstallStandardStreams.h>
 
 #include <me_RgbStripe.h>
@@ -23,8 +24,7 @@
 
 void setup()
 {
-  Serial.begin(me_UartSpeeds::Arduino_Fast_Bps);
-  Serial.setTimeout(15);
+  me_Uart::Init(me_UartSpeeds::Arduino_Fast_Bps);
 
   InstallStandardStreams();
 

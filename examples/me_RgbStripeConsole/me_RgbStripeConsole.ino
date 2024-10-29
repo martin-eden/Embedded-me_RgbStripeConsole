@@ -24,7 +24,7 @@
 
 void setup()
 {
-  me_Uart::Init(me_UartSpeeds::Bps_250k);
+  me_Uart::Init(me_UartSpeeds::Bps_115k);
 
   InstallStandardStreams();
 

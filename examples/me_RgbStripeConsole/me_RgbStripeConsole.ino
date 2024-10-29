@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-28
+  Last mod.: 2024-10-29
 */
 
 /*
@@ -24,7 +24,7 @@
 
 void setup()
 {
-  me_Uart::Init(me_UartSpeeds::Arduino_Fast_Bps);
+  me_Uart::Init(me_UartSpeeds::Bps_250k);
 
   InstallStandardStreams();
 

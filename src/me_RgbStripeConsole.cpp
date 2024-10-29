@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-13
+  Last mod.: 2024-10-30
 */
 
 #include "me_RgbStripeConsole.h"
@@ -81,7 +81,7 @@ void me_RgbStripeConsole::SetPixel(
     if (!Read_TUint_1(&Color.Blue)) return;
   }
 
-  if (!Stripe->SetPixel(Index, Color)) return;
+  Stripe->SetPixel(Index, Color);
 }
 
 /*
@@ -182,7 +182,7 @@ void me_RgbStripeConsole::SetPixels(
       if (!Read_TUint_1(&Color.Green)) return;
       if (!Read_TUint_1(&Color.Blue)) return;
 
-      if (!Stripe->SetPixel(Index, Color)) return;
+      Stripe->SetPixel(Index, Color);
     }
   }
 }
@@ -355,4 +355,5 @@ void me_RgbStripeConsole::RunTest(
   2024-09-17
   2024-09-27
   2024-10-10
+  2024-10-30
 */

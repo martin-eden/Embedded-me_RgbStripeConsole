@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-29
+  Last mod.: 2024-12-12
 */
 
 /*
@@ -44,8 +44,8 @@ void loop()
 */
 void AddCommand(
   me_Menu::TMenu * Menu,
-  const TChar * Command,
-  const TChar * Description,
+  const TAsciiz Command,
+  const TAsciiz Description,
   me_RgbStripe::TRgbStripe * Stripe,
   TMethod Handler
 )

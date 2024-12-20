@@ -63,28 +63,16 @@ those snippets. (I wrote [mine in Lua][Lua-RgbStripeConsole]).
   * bash
 
 
-## Installation
+## Install/remove
 
-Setting up toolchain is a pain, I know.
+* Easy way is to clone [GetLibs][GetLibs] repo and run it's code.
 
-Even more for my source code, because it's scattered among repos and
-repos are evolving.
-
-So I'm providing [compiled binary][Binary]. Maybe it's not the latest
-but stable version I'm happy with.
+* Also I'm providing [compiled binary][Binary]. Maybe it's not the latest
+  but stable version I'm happy with.
 
 * Use [Upload.sh](Upload.sh).
 
   It assumes you're under Linux and _apt-installed_ `avrdude`.
-
-* Or use `arduino-cli`, collect libraries and compile:
-
-  Run [Install.sh](Install.sh).
-
-
-## Removal
-
-Run [Remove.sh](Remove.sh).
 
 
 ## Compile
@@ -100,13 +88,19 @@ arduino-cli compile --fqbn arduino:avr:uno --quiet --warnings all . --build-prop
 
 * [RGB stripe class][me_RgbStripe]
 * [Lua client][Lua-RgbStripeConsole]
-* [My other embedded C++ libraries](https://github.com/martin-eden/Embedded_Crafts/tree/master/Parts)
-* [My other repositories](https://github.com/martin-eden/contents)
+* [My other embedded C++ libraries][Embedded]
+* [My other repositories][Repos]
 
-[Binary]: bin/me_RgbStripeConsole.ino.hex
 [Example]: examples/me_RgbStripeConsole/me_RgbStripeConsole.ino
 [Interface]: src/me_RgbStripeConsole.h
 [Implementation]: src/me_RgbStripeConsole.cpp
-[Lua-RgbStripeConsole]: https://github.com/martin-eden/Lua-RgbStripeConsole
-[me_RgbStripe]: https://github.com/martin-eden/Embedded-me_RgbStripe
+
+[Binary]: bin/me_RgbStripeConsole.ino.hex
+[GetLibs]: https://github.com/martin-eden/Embedded-Framework-GetLibs
+
 [me_Menu]: https://github.com/martin-eden/Embedded-me_Menu
+[me_RgbStripe]: https://github.com/martin-eden/Embedded-me_RgbStripe
+[Lua-RgbStripeConsole]: https://github.com/martin-eden/Lua-RgbStripeConsole
+[Embedded]: https://github.com/martin-eden/Embedded_Crafts/tree/master/Parts
+[Repos]: https://github.com/martin-eden/contents
+

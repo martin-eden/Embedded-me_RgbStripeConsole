@@ -5,12 +5,10 @@
   Last mod.: 2024-10-30
 */
 
-#include "me_RgbStripeConsole.h"
+#include <me_RgbStripeConsole.h>
 
 #include <me_RgbStripe.h>
-
 #include <me_ReadInteger.h> // for reading integers, lol
-
 #include <me_Console.h> // printing data to serial
 
 using

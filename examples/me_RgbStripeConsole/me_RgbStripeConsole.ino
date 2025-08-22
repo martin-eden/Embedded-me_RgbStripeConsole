@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-12-20
+  Last mod.: 2025-08-22
 */
 
 /*
@@ -12,24 +12,26 @@
   So renaming commands will require similar changes at that side.
 */
 
+/*
+  2025-08-22 Code Mem
+    8868 353
+    7246 401 - removed printf_P(PSTR())
+*/
+
 #include <me_RgbStripeConsole.h>
 
 #include <me_BaseTypes.h>
-#include <me_Uart.h>
-#include <me_InstallStandardStreams.h>
-
-#include <me_RgbStripe.h>
+#include <me_Console.h>
 #include <me_Menu.h>
+#include <me_RgbStripe.h>
 
 void setup()
 {
-  me_Uart::Init(me_Uart::Speed_115k_Bps);
+  Console.Init();
 
-  InstallStandardStreams();
-
-  printf_P(PSTR("[me_RgbStripeConsole] Started.\n"));
+  Console.PrintProgmem(AsProgmemSeg("[me_RgbStripeConsole] Started."));
   RunTest();
-  printf_P(PSTR("[me_RgbStripeConsole] Done.\n"));
+  Console.PrintProgmem(AsProgmemSeg("[me_RgbStripeConsole] Done."));
 }
 
 void loop()
@@ -116,7 +118,9 @@ void RunTest()
 
     if (!Stripe.Init(StripePin, NumLeds))
     {
-      printf_P(PSTR("Failed to init stripe. No memory for that length?\n"));
+      Console.PrintProgmem(
+        AsProgmemSeg("Failed to initialize stripe. No memory for that length?")
+      );
       return;
     }
   }
@@ -134,4 +138,5 @@ void RunTest()
   2024-09-17
   2024-09-27
   2024-10-18
+  2025-08-22
 */

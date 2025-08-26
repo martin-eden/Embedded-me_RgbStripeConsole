@@ -13,9 +13,13 @@
 */
 
 /*
-  2025-08-22 Code Mem
-    8868 353
-    7246 401 - removed printf_P(PSTR())
+  Footprint history
+
+  2025-08-22  Code  Mem  Notes
+              8868  353
+              7246  401  Removed printf_P(PSTR())
+  2025-08-26  7816  434
+              7892  434  No more <.Bytes> in memory segment
 */
 
 #include <me_RgbStripeConsole.h>

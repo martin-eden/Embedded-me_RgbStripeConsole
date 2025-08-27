@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-22
+  Last mod.: 2025-08-27
 */
 
 /*
@@ -20,11 +20,16 @@
               7246  401  Removed printf_P(PSTR())
   2025-08-26  7816  434
               7892  434  No more <.Bytes> in memory segment
+  2025-08-27  8048  442
+              8152  442
+              8164  442
+              8014  434  Address segment in base types now
 */
 
 #include <me_RgbStripeConsole.h>
 
 #include <me_BaseTypes.h>
+#include <me_MemorySegment.h>
 #include <me_Console.h>
 #include <me_Menu.h>
 #include <me_RgbStripe.h>

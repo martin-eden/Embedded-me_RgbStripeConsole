@@ -29,10 +29,10 @@
 #include <me_RgbStripeConsole.h>
 
 #include <me_BaseTypes.h>
-#include <me_MemorySegment.h>
 #include <me_Console.h>
 #include <me_Menu.h>
 #include <me_RgbStripe.h>
+#include <me_ProgramMemory.h>
 
 void setup()
 {

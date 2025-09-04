@@ -2,20 +2,17 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2024-10-30
+  Last mod.: 2025-09-01
 */
 
 #include <me_RgbStripeConsole.h>
 
 #include <me_RgbStripe.h>
-#include <me_ReadInteger.h> // for reading integers, lol
-#include <me_Console.h> // printing data to serial
+#include <me_Console.h>
 
 using
   me_RgbStripe::TRgbStripe,
-  me_RgbStripe::TColor,
-  me_ReadInteger::Read_TUint_1,
-  me_ReadInteger::Read_TUint_2;
+  me_RgbStripe::TColor;
 
 // ( RGB stripe handlers
 
@@ -23,7 +20,7 @@ using
   Send data to stripe
 */
 void me_RgbStripeConsole::Display(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -36,7 +33,7 @@ void me_RgbStripeConsole::Display(
   Zero data
 */
 void me_RgbStripeConsole::Reset(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -61,7 +58,7 @@ void me_RgbStripeConsole::Reset(
     TUint_1 -- Blue
 */
 void me_RgbStripeConsole::SetPixel(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -70,13 +67,13 @@ void me_RgbStripeConsole::SetPixel(
   TUint_2 Index;
   TColor Color;
 
-  if (!Read_TUint_2(&Index)) return;
+  if (!Console.Read(&Index)) return;
 
   // Read color components
   {
-    if (!Read_TUint_1(&Color.Red)) return;
-    if (!Read_TUint_1(&Color.Green)) return;
-    if (!Read_TUint_1(&Color.Blue)) return;
+    if (!Console.Read(&Color.Red)) return;
+    if (!Console.Read(&Color.Green)) return;
+    if (!Console.Read(&Color.Blue)) return;
   }
 
   Stripe->SetPixel(Index, Color);
@@ -98,7 +95,7 @@ void me_RgbStripeConsole::SetPixel(
     TUint_1 -- Blue
 */
 void me_RgbStripeConsole::GetPixel(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -107,7 +104,7 @@ void me_RgbStripeConsole::GetPixel(
   TUint_2 Index;
   TColor Color;
 
-  if (!Read_TUint_2(&Index)) return;
+  if (!Console.Read(&Index)) return;
 
   if (!Stripe->GetPixel(Index, &Color)) return;
 
@@ -158,7 +155,7 @@ void me_RgbStripeConsole::GetPixel(
     ) ..
 */
 void me_RgbStripeConsole::SetPixels(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -166,8 +163,8 @@ void me_RgbStripeConsole::SetPixels(
 
   TUint_2 StartIndex, StopIndex;
 
-  if (!Read_TUint_2(&StartIndex)) return;
-  if (!Read_TUint_2(&StopIndex)) return;
+  if (!Console.Read(&StartIndex)) return;
+  if (!Console.Read(&StopIndex)) return;
 
   // Set pixels in range
   {
@@ -176,9 +173,9 @@ void me_RgbStripeConsole::SetPixels(
 
     for (Index = StartIndex; Index <= StopIndex; ++Index)
     {
-      if (!Read_TUint_1(&Color.Red)) return;
-      if (!Read_TUint_1(&Color.Green)) return;
-      if (!Read_TUint_1(&Color.Blue)) return;
+      if (!Console.Read(&Color.Red)) return;
+      if (!Console.Read(&Color.Green)) return;
+      if (!Console.Read(&Color.Blue)) return;
 
       Stripe->SetPixel(Index, Color);
     }
@@ -204,7 +201,7 @@ void me_RgbStripeConsole::SetPixels(
     ) ..
 */
 void me_RgbStripeConsole::GetPixels(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -212,8 +209,8 @@ void me_RgbStripeConsole::GetPixels(
 
   TUint_2 StartIndex, StopIndex;
 
-  if (!Read_TUint_2(&StartIndex)) return;
-  if (!Read_TUint_2(&StopIndex)) return;
+  if (!Console.Read(&StartIndex)) return;
+  if (!Console.Read(&StopIndex)) return;
 
   // Print pixels in range
   {
@@ -244,7 +241,7 @@ void me_RgbStripeConsole::GetPixels(
     TUint_1 -- Output pin
 */
 void me_RgbStripeConsole::SetOutputPin(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -252,7 +249,7 @@ void me_RgbStripeConsole::SetOutputPin(
 
   TUint_1 OutputPin;
 
-  if (!Read_TUint_1(&OutputPin)) return;
+  if (!Console.Read(&OutputPin)) return;
 
   if (!Stripe->SetOutputPin(OutputPin)) return;
 }
@@ -265,7 +262,7 @@ void me_RgbStripeConsole::SetOutputPin(
     TUint_1 -- Output pin
 */
 void me_RgbStripeConsole::GetOutputPin(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -285,7 +282,7 @@ void me_RgbStripeConsole::GetOutputPin(
     TUint_2 -- Length
 */
 void me_RgbStripeConsole::SetLength(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -293,7 +290,7 @@ void me_RgbStripeConsole::SetLength(
 
   TUint_2 Length;
 
-  if (!Read_TUint_2(&Length)) return;
+  if (!Console.Read(&Length)) return;
 
   if (!Stripe->SetLength(Length)) return;
 }
@@ -306,7 +303,7 @@ void me_RgbStripeConsole::SetLength(
     TUint_2 -- Length
 */
 void me_RgbStripeConsole::GetLength(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -322,7 +319,7 @@ void me_RgbStripeConsole::GetLength(
   Just display some pattern with no questions asked
 */
 void me_RgbStripeConsole::RunTest(
-  TUint_2 Data __attribute__((unused)),
+  TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
@@ -349,9 +346,6 @@ void me_RgbStripeConsole::RunTest(
 // ) RGB stripe handlers
 
 /*
-  2024-09-09
-  2024-09-17
-  2024-09-27
-  2024-10-10
-  2024-10-30
+  2024 # # # # #
+  2025-09-01
 */

@@ -15,15 +15,13 @@
 /*
   Footprint history
 
-  2025-08-22  Code  Mem  Notes
+              Code  Mem  Notes
               8868  353
-              7246  401  Removed printf_P(PSTR())
-  2025-08-26  7816  434
-              7892  434  No more <.Bytes> in memory segment
-  2025-08-27  8048  442
-              8152  442
-              8164  442
-              8014  434  Address segment in base types now
+  2025-08-22  7246  401  Removed printf_P(PSTR())
+  2025-08-26  7892  434  No more <.Bytes> in memory segment
+  2025-08-27  8014  434  Address segment in base types now
+  2025-09-01  8598  452  Streams
+  2025-09-04  8482  429  Removed [me_SerialTokenizer]
 */
 
 #include <me_RgbStripeConsole.h>

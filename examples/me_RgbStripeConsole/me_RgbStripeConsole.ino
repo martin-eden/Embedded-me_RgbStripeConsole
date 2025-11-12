@@ -22,6 +22,8 @@
   2025-08-27  8014  434  Address segment in base types now
   2025-09-01  8598  452  Streams
   2025-09-04  8482  429  Removed [me_SerialTokenizer]
+  2025-11-12  8734  411
+  2025-11-12  7852  539  Interface reduction
 */
 
 #include <me_RgbStripeConsole.h>
@@ -30,22 +32,13 @@
 #include <me_Console.h>
 #include <me_Menu.h>
 #include <me_RgbStripe.h>
-#include <me_ProgramMemory.h>
 
-void setup()
-{
-  Console.Init();
+const TUint_1 StripePin = 2;
+const TUint_2 StripeLength = 60;
 
-  Console.PrintProgmem(AsProgmemSeg("[me_RgbStripeConsole] Started."));
-  RunTest();
-  Console.PrintProgmem(AsProgmemSeg("[me_RgbStripeConsole] Done."));
-}
+const TUint_2 DataMemSize = StripeLength * sizeof(me_RgbStripe::TColor);
 
-void loop()
-{
-}
-
-//--
+TUint_1 DataMem[DataMemSize];
 
 /*
   [handy] Add command to menu
@@ -54,18 +47,18 @@ void AddCommand(
   me_Menu::TMenu * Menu,
   const TAsciiz Command,
   const TAsciiz Description,
-  me_RgbStripe::TRgbStripe * Stripe,
-  TMethod Handler
+  TMethod Handler,
+  me_RgbStripe::TRgbStripe * Stripe
 )
 {
-  using
-    me_Menu::Freetown::ToItem;
-
-  me_Menu::TMenuItem Item;
-
-  Item = ToItem(Command, Description, Handler, (TUint_2) Stripe);
-
-  Menu->AddItem(Item);
+  Menu->AddItem(
+    me_Menu::Freetown::ToItem(
+      Command,
+      Description,
+      Handler,
+      (TUint_2) Stripe
+    )
+  );
 }
 
 /*
@@ -81,62 +74,46 @@ void AddCommands(
   // For short referring handlers from that namespace
   using namespace me_RgbStripeConsole;
 
-  AddCommand(Menu, "D", "Display", Stripe, Display);
-  AddCommand(Menu, "R", "Reset pixels", Stripe, Reset);
-  AddCommand(Menu, "T", "Run test", Stripe, RunTest);
+  AddCommand(Menu, "D", "Display", Display, Stripe);
+  AddCommand(Menu, "C", "Clear pixels", Clear, Stripe);
+  AddCommand(Menu, "T", "Run test", RunTest, Stripe);
 
-  AddCommand(Menu, "SP", "Set pixel. (idx r g b)()", Stripe, SetPixel);
-  AddCommand(Menu, "GP", "Get pixel. (idx)(r g b)", Stripe, GetPixel);
+  AddCommand(Menu, "SP", "Set pixel. (idx r g b)()", SetPixel, Stripe);
+  AddCommand(Menu, "GP", "Get pixel. (idx)(r g b)", GetPixel, Stripe);
 
-  AddCommand(Menu, "SPR", "Set pixels range. (start_i end_i (r g b)..)()", Stripe, SetPixels);
-  AddCommand(Menu, "GPR", "Get pixels range. (start_i end_i)((r g b)..))", Stripe, GetPixels);
+  AddCommand(Menu, "SPR", "Set pixels range. (start_i end_i (r g b)..)()", SetPixels, Stripe);
+  AddCommand(Menu, "GPR", "Get pixels range. (start_i end_i)((r g b)..))", GetPixels, Stripe);
 
-  AddCommand(Menu, "GL", "Get length. ()(len)", Stripe, GetLength);
-  AddCommand(Menu, "SL", "Set length. (len)()", Stripe, SetLength);
-  AddCommand(Menu, "GOP", "Get output pin. ()(pin)", Stripe, GetOutputPin);
-  AddCommand(Menu, "SOP", "Set output pin. (pin)()", Stripe, SetOutputPin);
+  AddCommand(Menu, "GL", "Get length. ()(len)", GetLength, Stripe);
 }
 
 // Setup stripe, setup and run menu
 void RunTest()
 {
-  // LED stripe instance
-  me_RgbStripe::TRgbStripe Stripe;
+  const TAddressSegment DataSeg = { (TAddress) &DataMem, sizeof(DataMem) };
 
-  // Menu instance
+  me_RgbStripe::TRgbStripe Stripe;
   me_Menu::TMenu Menu;
 
-  // Setup menu
-  {
-    Menu.AddBuiltinCommands();
+  Stripe.Init(StripePin, DataSeg);
 
-    AddCommands(&Menu, &Stripe);
-  }
+  AddCommands(&Menu, &Stripe);
+  Menu.AddBuiltinCommands();
 
-  // Setup stripe
-  /*
-    Initializing here to have space to resize pixels memory when
-    changing stripe length.
-  */
-  {
-    // We can change output pin and stripe length later from console
-    TUint_1 StripePin = 2;
-    TUint_2 NumLeds = 60;
+  Menu.Print();
+  Menu.Run();
+}
 
-    if (!Stripe.Init(StripePin, NumLeds))
-    {
-      Console.PrintProgmem(
-        AsProgmemSeg("Failed to initialize stripe. No memory for that length?")
-      );
-      return;
-    }
-  }
+void setup()
+{
+  Console.Init();
+  Console.Print("NeoPixel RGB stripe console");
+  RunTest();
+  Console.Print("Done");
+}
 
-  // Print menu commands and start handling them
-  {
-    Menu.Print();
-    Menu.Run();
-  }
+void loop()
+{
 }
 
 /*
@@ -146,4 +123,5 @@ void RunTest()
   2024-09-27
   2024-10-18
   2025-08-22
+  2025-11-12
 */

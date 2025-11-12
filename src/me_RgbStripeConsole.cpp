@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-01
+  Last mod.: 2025-11-12
 */
 
 #include <me_RgbStripeConsole.h>
@@ -30,53 +30,36 @@ void me_RgbStripeConsole::Display(
 }
 
 /*
-  Zero data
+  Set pixels to initial state (zeroes)
 */
-void me_RgbStripeConsole::Reset(
+void me_RgbStripeConsole::Clear(
   TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
-  Stripe->Reset();
+  Stripe->Clear();
 }
 
 /*
-  Set pixel in memory
+  Get stripe length
 
-  We are reading from stdin (or serial). We return nothing.
+  Output
 
-  If we did not read enough data or data is not suitable,
-  we just return.
-
-  Input:
-
-    TUint_2 -- Index
-    TUint_1 -- Red
-    TUint_1 -- Green
-    TUint_1 -- Blue
+    TUint_2 -- Length
 */
-void me_RgbStripeConsole::SetPixel(
+void me_RgbStripeConsole::GetLength(
   TUint_2 Data [[gnu::unused]],
   TUint_2 Instance
 )
 {
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
-  TUint_2 Index;
-  TColor Color;
+  TUint_2 Length = Stripe->GetLength();
 
-  if (!Console.Read(&Index)) return;
-
-  // Read color components
-  {
-    if (!Console.Read(&Color.Red)) return;
-    if (!Console.Read(&Color.Green)) return;
-    if (!Console.Read(&Color.Blue)) return;
-  }
-
-  Stripe->SetPixel(Index, Color);
+  Console.Print(Length);
+  Console.EndLine();
 }
 
 /*
@@ -106,7 +89,7 @@ void me_RgbStripeConsole::GetPixel(
 
   if (!Console.Read(&Index)) return;
 
-  if (!Stripe->GetPixel(Index, &Color)) return;
+  if (!Stripe->GetPixel(&Color, Index)) return;
 
   Console.Print(Color.Red);
   Console.Print(Color.Green);
@@ -114,6 +97,39 @@ void me_RgbStripeConsole::GetPixel(
   Console.EndLine();
 }
 
+/*
+  Set pixel in memory
+
+  We are reading from stdin (or serial). We return nothing.
+
+  If we did not read enough data or data is not suitable,
+  we just return.
+
+  Input:
+
+    TUint_2 -- Index
+    TUint_1 -- Red
+    TUint_1 -- Green
+    TUint_1 -- Blue
+*/
+void me_RgbStripeConsole::SetPixel(
+  TUint_2 Data [[gnu::unused]],
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_2 Index;
+  TColor Color;
+
+  if (!Console.Read(&Index)) return;
+
+  if (!Console.Read(&Color.Red)) return;
+  if (!Console.Read(&Color.Green)) return;
+  if (!Console.Read(&Color.Blue)) return;
+
+  Stripe->SetPixel(Index, Color);
+}
 
 // ( Pixels range
 
@@ -140,49 +156,6 @@ void me_RgbStripeConsole::GetPixel(
 */
 
 /*
-  Set pixels
-
-  Additional functionality.
-
-  Input:
-
-    TUint_2 -- Start index
-    TUint_2 -- Stop index
-    (
-      TUint_1 -- Red
-      TUint_1 -- Green
-      TUint_1 -- Blue
-    ) ..
-*/
-void me_RgbStripeConsole::SetPixels(
-  TUint_2 Data [[gnu::unused]],
-  TUint_2 Instance
-)
-{
-  TRgbStripe * Stripe = (TRgbStripe *) Instance;
-
-  TUint_2 StartIndex, StopIndex;
-
-  if (!Console.Read(&StartIndex)) return;
-  if (!Console.Read(&StopIndex)) return;
-
-  // Set pixels in range
-  {
-    TUint_2 Index;
-    TColor Color;
-
-    for (Index = StartIndex; Index <= StopIndex; ++Index)
-    {
-      if (!Console.Read(&Color.Red)) return;
-      if (!Console.Read(&Color.Green)) return;
-      if (!Console.Read(&Color.Blue)) return;
-
-      Stripe->SetPixel(Index, Color);
-    }
-  }
-}
-
-/*
   Get pixels
 
   Additional functionality.
@@ -206,114 +179,69 @@ void me_RgbStripeConsole::GetPixels(
 )
 {
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
+  const TColor FailColor = { 0, 0, 0 };
 
   TUint_2 StartIndex, StopIndex;
+  TUint_2 Index;
+  TColor Color;
 
   if (!Console.Read(&StartIndex)) return;
   if (!Console.Read(&StopIndex)) return;
 
-  // Print pixels in range
+  for (Index = StartIndex; Index <= StopIndex; ++Index)
   {
-    TUint_2 Index;
-    TColor Color;
+    if (!Stripe->GetPixel(&Color, Index))
+      Color = FailColor;
 
-    for (Index = StartIndex; Index <= StopIndex; ++Index)
-    {
-      if (!Stripe->GetPixel(Index, &Color)) break;
+    Console.Print(Color.Red);
+    Console.Print(Color.Green);
+    Console.Print(Color.Blue);
+    Console.Write("");
+  }
 
-      Console.Print(Color.Red);
-      Console.Print(Color.Green);
-      Console.Print(Color.Blue);
-      Console.Write("");
-    }
+  Console.EndLine();
+}
 
-    Console.EndLine();
+/*
+  Set pixels
+
+  Additional functionality.
+
+  Input:
+
+    TUint_2 -- Start index
+    TUint_2 -- Stop index
+    (
+      TUint_1 -- Red
+      TUint_1 -- Green
+      TUint_1 -- Blue
+    ) ..
+*/
+void me_RgbStripeConsole::SetPixels(
+  TUint_2 Data [[gnu::unused]],
+  TUint_2 Instance
+)
+{
+  TRgbStripe * Stripe = (TRgbStripe *) Instance;
+
+  TUint_2 StartIndex, StopIndex;
+  TUint_2 Index;
+  TColor Color;
+
+  if (!Console.Read(&StartIndex)) return;
+  if (!Console.Read(&StopIndex)) return;
+
+  for (Index = StartIndex; Index <= StopIndex; ++Index)
+  {
+    if (!Console.Read(&Color.Red)) return;
+    if (!Console.Read(&Color.Green)) return;
+    if (!Console.Read(&Color.Blue)) return;
+
+    Stripe->SetPixel(Index, Color);
   }
 }
 
 // ) Pixels range
-
-/*
-  Set output pin
-
-  Input
-
-    TUint_1 -- Output pin
-*/
-void me_RgbStripeConsole::SetOutputPin(
-  TUint_2 Data [[gnu::unused]],
-  TUint_2 Instance
-)
-{
-  TRgbStripe * Stripe = (TRgbStripe *) Instance;
-
-  TUint_1 OutputPin;
-
-  if (!Console.Read(&OutputPin)) return;
-
-  if (!Stripe->SetOutputPin(OutputPin)) return;
-}
-
-/*
-  Get output pin
-
-  Output
-
-    TUint_1 -- Output pin
-*/
-void me_RgbStripeConsole::GetOutputPin(
-  TUint_2 Data [[gnu::unused]],
-  TUint_2 Instance
-)
-{
-  TRgbStripe * Stripe = (TRgbStripe *) Instance;
-
-  TUint_1 OutputPin = Stripe->GetOutputPin();
-
-  Console.Print(OutputPin);
-  Console.EndLine();
-}
-
-/*
-  Set stripe length
-
-  Input
-
-    TUint_2 -- Length
-*/
-void me_RgbStripeConsole::SetLength(
-  TUint_2 Data [[gnu::unused]],
-  TUint_2 Instance
-)
-{
-  TRgbStripe * Stripe = (TRgbStripe *) Instance;
-
-  TUint_2 Length;
-
-  if (!Console.Read(&Length)) return;
-
-  if (!Stripe->SetLength(Length)) return;
-}
-
-/*
-  Get stripe length
-
-  Output
-
-    TUint_2 -- Length
-*/
-void me_RgbStripeConsole::GetLength(
-  TUint_2 Data [[gnu::unused]],
-  TUint_2 Instance
-)
-{
-  TRgbStripe * Stripe = (TRgbStripe *) Instance;
-
-  TUint_2 Length = Stripe->GetLength();
-
-  Console.Print(Length);
-  Console.EndLine();
-}
 
 /*
   Just display some pattern with no questions asked
@@ -325,12 +253,13 @@ void me_RgbStripeConsole::RunTest(
 {
   TRgbStripe * Stripe = (TRgbStripe *) Instance;
 
-  Stripe->Reset();
+  Clear(Data, Instance);
 
   // Light-up border and middle pixels. Stolen from [me_RgbStripe.Example].
   {
-    TColor Blue = { .Red = 0, .Green = 0, .Blue = 0xFF };
-    TColor Green = { .Red = 0, .Green = 0xFF, .Blue = 0 };
+    const TColor
+      Blue = { 0x00, 0x00, 0xFF },
+      Green = { 0x00, 0xFF, 0x00 };
 
     TUint_2 StripeLength = Stripe->GetLength();
 
@@ -348,4 +277,5 @@ void me_RgbStripeConsole::RunTest(
 /*
   2024 # # # # #
   2025-09-01
+  2025-11-12
 */

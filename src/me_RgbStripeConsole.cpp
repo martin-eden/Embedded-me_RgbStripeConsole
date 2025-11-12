@@ -158,16 +158,16 @@ void me_RgbStripeConsole::SetPixel(
   However common communication scenario is setting all stripe
   pixels to different values. This can be transmitted as
 
-    SP 1 11 11 11
-    SP 0 10 10 10
-    SP 2 12 12 12
+    SP 2 11 11 11
+    SP 1 10 10 10
+    SP 3 12 12 12
     // Tokens = Pixels * 5
 
   Each pixel in transaction has unique index from range.
   So I would prefer just specify index range and transmit
   sequence of pixel colors:
 
-    SPR 0 2 10 10 10 11 11 11 12 12 12
+    SPR 1 3 10 10 10 11 11 11 12 12 12
     // Tokens = Pixels * 3 + 3
 
   Not readable and less resilient but we are transmitting same data
@@ -275,10 +275,10 @@ void me_RgbStripeConsole::RunTest(
 
     TUint_2 StripeLength = Stripe->GetLength();
 
-    Stripe->SetPixel(0, Blue);
+    Stripe->SetPixel(1, Blue);
     Stripe->SetPixel(StripeLength / 2, Blue);
     Stripe->SetPixel(StripeLength / 2 + 1, Green);
-    Stripe->SetPixel(StripeLength - 1, Blue);
+    Stripe->SetPixel(StripeLength, Blue);
   }
 
   Stripe->Display();

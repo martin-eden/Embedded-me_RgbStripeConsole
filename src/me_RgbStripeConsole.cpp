@@ -14,6 +14,30 @@ using
   me_RgbStripe::TRgbStripe,
   me_RgbStripe::TColor;
 
+static TBool ParseColor(
+  TColor * Color
+)
+{
+  if (!Console.Read(&Color->Red))
+    return false;
+  if (!Console.Read(&Color->Green))
+    return false;
+  if (!Console.Read(&Color->Blue))
+    return false;
+
+  return true;
+}
+
+static void PrintColor(
+  TColor Color
+)
+{
+  Console.Print(Color.Red);
+  Console.Print(Color.Green);
+  Console.Print(Color.Blue);
+  Console.EndLine();
+}
+
 // ( RGB stripe handlers
 
 /*
@@ -91,10 +115,7 @@ void me_RgbStripeConsole::GetPixel(
 
   if (!Stripe->GetPixel(&Color, Index)) return;
 
-  Console.Print(Color.Red);
-  Console.Print(Color.Green);
-  Console.Print(Color.Blue);
-  Console.EndLine();
+  PrintColor(Color);
 }
 
 /*
@@ -124,9 +145,7 @@ void me_RgbStripeConsole::SetPixel(
 
   if (!Console.Read(&Index)) return;
 
-  if (!Console.Read(&Color.Red)) return;
-  if (!Console.Read(&Color.Green)) return;
-  if (!Console.Read(&Color.Blue)) return;
+  if (!ParseColor(&Color)) return;
 
   Stripe->SetPixel(Index, Color);
 }
@@ -193,13 +212,8 @@ void me_RgbStripeConsole::GetPixels(
     if (!Stripe->GetPixel(&Color, Index))
       Color = FailColor;
 
-    Console.Print(Color.Red);
-    Console.Print(Color.Green);
-    Console.Print(Color.Blue);
-    Console.Write("");
+    PrintColor(Color);
   }
-
-  Console.EndLine();
 }
 
 /*
@@ -233,9 +247,7 @@ void me_RgbStripeConsole::SetPixels(
 
   for (Index = StartIndex; Index <= StopIndex; ++Index)
   {
-    if (!Console.Read(&Color.Red)) return;
-    if (!Console.Read(&Color.Green)) return;
-    if (!Console.Read(&Color.Blue)) return;
+    if (!ParseColor(&Color)) return;
 
     Stripe->SetPixel(Index, Color);
   }

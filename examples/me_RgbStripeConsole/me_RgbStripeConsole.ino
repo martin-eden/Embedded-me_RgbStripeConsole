@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-08-27
+  Last mod.: 2025-11-18
 */
 
 /*
@@ -90,7 +90,7 @@ void AddCommands(
 // Setup stripe, setup and run menu
 void RunTest()
 {
-  const TAddressSegment DataSeg = { (TAddress) &DataMem, sizeof(DataMem) };
+  const TAddressSegment DataSeg = AsAddrSeg_M(DataMem);
 
   me_RgbStripe::TRgbStripe Stripe;
   me_Menu::TMenu Menu;

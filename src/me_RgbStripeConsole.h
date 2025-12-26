@@ -1,8 +1,8 @@
-// Serial interface for RGB LED stripe
+// Menu interface items for RGB LED stripe
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-12
+  Last mod.: 2025-12-26
 */
 
 #pragma once
@@ -12,9 +12,9 @@
 // Stripe menu handlers
 namespace me_RgbStripeConsole
 {
-  // Send data to stripe
+  // Send data to stripe. ()()
   void Display(TUint_2, TUint_2 Stripe);
-  // Set all colors to black
+  // Set all colors to black. ()()
   void Clear(TUint_2, TUint_2 Stripe);
 
   // Get stripe length. ()(Length)
@@ -30,7 +30,7 @@ namespace me_RgbStripeConsole
   // [Handy] Set pixels. (StartIdx EndIdx (Red Green Blue)..)()
   void SetPixels(TUint_2, TUint_2 Stripe);
 
-  // [Handy] Just display some pattern with no questions asked
+  // [Handy] Just display some pattern with no questions asked. ()()
   void RunTest(TUint_2, TUint_2 Stripe);
 }
 

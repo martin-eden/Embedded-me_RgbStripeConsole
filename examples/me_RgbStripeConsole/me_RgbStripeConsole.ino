@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2026-01-10
+  Last mod.: 2026-02-17
 */
 
 /*
@@ -24,6 +24,7 @@
   2025-09-04  8482  429  Removed [me_SerialTokenizer]
   2025-11-12  8734  411
   2025-11-12  7888  539  Interface reduction
+  2026-02-17  8012  534
 */
 
 #include <me_RgbStripeConsole.h>

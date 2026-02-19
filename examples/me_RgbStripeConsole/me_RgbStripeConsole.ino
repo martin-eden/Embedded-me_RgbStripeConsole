@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2026-02-17
+  Last mod.: 2026-02-19
 */
 
 /*
@@ -25,6 +25,8 @@
   2025-11-12  8734  411
   2025-11-12  7888  539  Interface reduction
   2026-02-17  8012  534
+  2026-02-19  8118  546  Meddling with bits access
+              8024  534
 */
 
 #include <me_RgbStripeConsole.h>
